@@ -2,7 +2,7 @@
 
 - polly: Amazon Polly neural Japanese voices (Kazuha, Tomoko, Takumi), profile new-account.
 - aivis: AivisSpeech Engine running locally on port 10101 (free, Style-Bert-VITS2 models).
-- say:   macOS `say`, used for the English parts.
+- say:   macOS `say`.
 """
 import hashlib
 import json
@@ -28,11 +28,11 @@ def _to_wav(src, dst):
                     "-sample_fmt", "s16", dst], check=True)
 
 
-def polly(text, voice):
-    out = _cached("polly", voice, text)
+def polly(text, voice, engine="neural"):
+    out = _cached("polly", voice, text, engine)
     if not os.path.exists(out):
         mp3 = out + ".mp3"
-        subprocess.run(AWS + ["polly", "synthesize-speech", "--engine", "neural", "--voice-id", voice,
+        subprocess.run(AWS + ["polly", "synthesize-speech", "--engine", engine, "--voice-id", voice,
                               "--output-format", "mp3", "--sample-rate", RATE, "--text", text, mp3],
                        check=True, stdout=subprocess.DEVNULL)
         _to_wav(mp3, out)
@@ -74,7 +74,7 @@ def say(text, voice="Samantha"):
 
 def chime():
     """A soft two-note bell (E6 then B6), well below speech level, marking the end of a card."""
-    out = _cached("chime", "", "v1")
+    out = _cached("chime", "", "v2")
     if not os.path.exists(out):
         import math
         import struct
@@ -89,7 +89,7 @@ def chime():
                     dt = t - start
                     env = min(dt / 0.005, 1.0) * math.exp(-dt * 6)
                     v += env * (math.sin(2 * math.pi * freq * dt) + 0.25 * math.sin(4 * math.pi * freq * dt))
-            frames.append(struct.pack("<h", int(max(-1, min(1, v * 0.12)) * 32767)))
+            frames.append(struct.pack("<h", int(max(-1, min(1, v * 0.06)) * 32767)))
         with wave.open(out, "wb") as w:
             w.setnchannels(1)
             w.setsampwidth(2)

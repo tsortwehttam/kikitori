@@ -11,6 +11,7 @@ Script format:
 A "card" item plays Japanese, English, then the Japanese again, followed by a chime.
 
 Roles: narrator, f (woman), m (man), card (sentence reader), en (English).
+A role can also name a voice directly, for auditions: "aivis:花音", "polly:Ruth:generative", "say:Samantha".
 Each spoken line is followed by a short gap unless the next item is an explicit pause.
 """
 import argparse
@@ -22,11 +23,12 @@ import tempfile
 
 import tts
 
-# Japanese role -> voice, per engine. English always uses macOS `say`.
+# Japanese role -> voice, per engine. English uses EN_VOICE whatever the engine.
+EN_VOICE = "say:Samantha"
 VOICES = {
     "polly": {"narrator": "Tomoko", "f": "Kazuha", "m": "Takumi", "card": "Kazuha"},
-    "aivis": {"narrator": ("まお", "ノーマル"), "f": ("コハク", "ノーマル"),
-              "m": ("阿井田 茂", "ノーマル"), "card": ("まお", "ノーマル")},
+    "aivis": {"narrator": ("花音", "ノーマル"), "f": ("わかな", "ノーマル"),
+              "m": ("阿井田 茂", "ノーマル"), "card": ("花音", "ノーマル")},
 }
 GAP = 0.45          # between consecutive lines
 CARD_PAUSE = 1.2    # inside a card: after the Japanese and after the English
@@ -49,12 +51,23 @@ def expand(lines):
 
 def render_line(engine, role, text, speakers):
     if role == "en":
-        return tts.say(text)
-    voice = VOICES[engine][role]
-    if engine == "polly":
-        return tts.polly(text, voice)
+        role = EN_VOICE
+    if ":" in role:  # an explicit voice
+        kind, *rest = role.split(":")
+        if kind == "say":
+            return tts.say(text, rest[0])
+        if kind == "polly":
+            return tts.polly(text, *rest)
+        engine, voice = "aivis", (rest[0], "ノーマル")
+    else:
+        voice = VOICES[engine][role]
+        if engine == "polly":
+            return tts.polly(text, voice)
     name, style = voice
-    styles = speakers[name]
+    if not speakers:
+        speakers.update(tts.aivis_speakers())
+    match = next(k for k in speakers if k.startswith(name))
+    styles = speakers[match]
     return tts.aivis(text, styles.get(style, next(iter(styles.values()))))
 
 

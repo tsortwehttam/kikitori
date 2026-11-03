@@ -1,0 +1,197 @@
+{
+ "title": "Voice audition",
+ "description": "Japanese: 1 花音, 2 ほのか, 3 わかな, 4 れな (AivisSpeech). English: A Samantha (macOS), B Joanna (Polly neural), C Ruth, D Matthew, E Danielle (Polly generative).",
+ "lines": [
+  {
+   "say": "en",
+   "text": "Voice audition. First, four Japanese female voices."
+  },
+  {
+   "pause": 1.0
+  },
+  {
+   "say": "say:Samantha",
+   "text": "Japanese voice 1."
+  },
+  {
+   "pause": 0.5
+  },
+  {
+   "say": "aivis:花音",
+   "text": "会社で男の人と女の人が話しています。"
+  },
+  {
+   "say": "aivis:花音",
+   "text": "田中さん、例のアプリのリリース、来週で大丈夫そう？"
+  },
+  {
+   "say": "aivis:花音",
+   "text": "谷中は今でも下町情緒が残っていて、散歩が楽しい。"
+  },
+  {
+   "pause": 0.7
+  },
+  {
+   "chime": true
+  },
+  {
+   "pause": 0.9
+  },
+  {
+   "say": "say:Samantha",
+   "text": "Japanese voice 2."
+  },
+  {
+   "pause": 0.5
+  },
+  {
+   "say": "aivis:ほのか",
+   "text": "会社で男の人と女の人が話しています。"
+  },
+  {
+   "say": "aivis:ほのか",
+   "text": "田中さん、例のアプリのリリース、来週で大丈夫そう？"
+  },
+  {
+   "say": "aivis:ほのか",
+   "text": "谷中は今でも下町情緒が残っていて、散歩が楽しい。"
+  },
+  {
+   "pause": 0.7
+  },
+  {
+   "chime": true
+  },
+  {
+   "pause": 0.9
+  },
+  {
+   "say": "say:Samantha",
+   "text": "Japanese voice 3."
+  },
+  {
+   "pause": 0.5
+  },
+  {
+   "say": "aivis:わかな",
+   "text": "会社で男の人と女の人が話しています。"
+  },
+  {
+   "say": "aivis:わかな",
+   "text": "田中さん、例のアプリのリリース、来週で大丈夫そう？"
+  },
+  {
+   "say": "aivis:わかな",
+   "text": "谷中は今でも下町情緒が残っていて、散歩が楽しい。"
+  },
+  {
+   "pause": 0.7
+  },
+  {
+   "chime": true
+  },
+  {
+   "pause": 0.9
+  },
+  {
+   "say": "say:Samantha",
+   "text": "Japanese voice 4."
+  },
+  {
+   "pause": 0.5
+  },
+  {
+   "say": "aivis:れな",
+   "text": "会社で男の人と女の人が話しています。"
+  },
+  {
+   "say": "aivis:れな",
+   "text": "田中さん、例のアプリのリリース、来週で大丈夫そう？"
+  },
+  {
+   "say": "aivis:れな",
+   "text": "谷中は今でも下町情緒が残っていて、散歩が楽しい。"
+  },
+  {
+   "pause": 0.7
+  },
+  {
+   "chime": true
+  },
+  {
+   "pause": 0.9
+  },
+  {
+   "say": "say:Samantha",
+   "text": "Now, five English voices."
+  },
+  {
+   "pause": 1.0
+  },
+  {
+   "say": "say:Samantha",
+   "text": "English voice A. Our budget got cut, so we decided to shelve a few features."
+  },
+  {
+   "pause": 0.7
+  },
+  {
+   "chime": true
+  },
+  {
+   "pause": 0.9
+  },
+  {
+   "say": "polly:Joanna:neural",
+   "text": "English voice B. Our budget got cut, so we decided to shelve a few features."
+  },
+  {
+   "pause": 0.7
+  },
+  {
+   "chime": true
+  },
+  {
+   "pause": 0.9
+  },
+  {
+   "say": "polly:Ruth:generative",
+   "text": "English voice C. Our budget got cut, so we decided to shelve a few features."
+  },
+  {
+   "pause": 0.7
+  },
+  {
+   "chime": true
+  },
+  {
+   "pause": 0.9
+  },
+  {
+   "say": "polly:Matthew:generative",
+   "text": "English voice D. Our budget got cut, so we decided to shelve a few features."
+  },
+  {
+   "pause": 0.7
+  },
+  {
+   "chime": true
+  },
+  {
+   "pause": 0.9
+  },
+  {
+   "say": "polly:Danielle:generative",
+   "text": "English voice E. Our budget got cut, so we decided to shelve a few features."
+  },
+  {
+   "pause": 0.7
+  },
+  {
+   "chime": true
+  },
+  {
+   "pause": 0.9
+  }
+ ]
+}
