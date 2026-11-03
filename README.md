@@ -8,12 +8,15 @@ A private Japanese listening podcast built from my Anki cards. Each daily episod
 4. **An opinion column** on a current topic.
 5. **A translated essay**: something I'd otherwise read in English, condensed into Japanese.
 
+After the news, column, and essay comes a short word list: up to 10 words or phrases I'm likely to miss, each in Japanese, English, Japanese again, and then the line it came from. Learn them, then play the episode again.
+
 Each segment's writer is asked to work in vocabulary I'm currently learning in Anki.
 
 ## How it works
 
 - `cards.py` syncs Anki through AnkiConnect and exports the card sentences added or reviewed since the last episode (`build/cards-today.json`), plus the vocabulary the segments should use (`build/vocab.txt`).
 - The segments are written by Claude Code: news, an opinion column, and a translated essay by subagents, and the dialogue as a spec that `dialogue.py` expands into `build/seg-dialogue.json`.
+- `glossary.py` picks each segment's word list from its writer's candidates. It keeps words still young in Anki first, and drops words mature in Anki, N5 and N4 single words (by a JLPT word list, `KIKITORI_JLPT`), and words reviewed in recent episodes.
 - `episode.py` assembles the day's script from the segment files (`build/seg-*.json`) and the card list, and records the episode's topics in `build/history.jsonl` so later episodes don't repeat them.
 - `build.py` renders a script to MP3. Japanese uses [AivisSpeech](https://aivis-project.com) running locally (花音, わかな, 阿井田 茂; started automatically if it isn't running) or Amazon Polly. English uses macOS `say`. Audio is loudness-normalised to podcast level.
 - `publish.py` uploads the episode to S3 and rebuilds an RSS feed. CloudFront serves the feed under a secret path, and podcast apps subscribe to it by URL. `--remove` deletes an episode.
