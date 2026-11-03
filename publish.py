@@ -63,7 +63,9 @@ def duration(path):
 def transcript_html(script):
     rows = []
     for item in script.get("lines", []):
-        if "card" in item:
+        if "section" in item:
+            rows.append(f"<h3>{html.escape(item['section'])}</h3>")
+        elif "card" in item:
             rows.append(f"<p>{html.escape(item['card']['ja'])}<br><i>{html.escape(item['card']['en'])}</i></p>")
         elif "text" in item:
             cls = "en" if item["say"] == "en" else "ja"

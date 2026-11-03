@@ -8,7 +8,8 @@ Script format:
      "lines": [{"say": "f", "text": "..."}, {"pause": 1.5}, {"say": "en", "text": "..."},
                {"card": {"ja": "...", "en": "..."}}, {"chime": true}]}
 
-A "card" item plays Japanese, English, then the Japanese again, followed by a chime.
+A "card" item plays Japanese, English, then the Japanese again, followed by a chime;
+its optional "voice" picks the reader. A {"section": "..."} item only labels the transcript.
 
 Roles: narrator, f (woman), m (man), card (sentence reader), en (English).
 A role can also name a voice directly, for auditions: "aivis:花音", "polly:Ruth:generative", "say:Samantha".
@@ -40,11 +41,11 @@ def expand(lines):
     out = []
     for item in lines:
         if "card" in item:
-            ja, en = item["card"]["ja"], item["card"]["en"]
-            out += [{"say": "card", "text": ja}, {"pause": CARD_PAUSE}, {"say": "en", "text": en},
-                    {"pause": CARD_PAUSE}, {"say": "card", "text": ja}, {"pause": 0.7},
+            ja, en, voice = item["card"]["ja"], item["card"]["en"], item["card"].get("voice", "card")
+            out += [{"say": voice, "text": ja}, {"pause": CARD_PAUSE}, {"say": "en", "text": en},
+                    {"pause": CARD_PAUSE}, {"say": voice, "text": ja}, {"pause": 0.7},
                     {"chime": True}, {"pause": 0.7}]
-        else:
+        elif "section" not in item:  # sections only label the transcript
             out.append(item)
     return out
 
