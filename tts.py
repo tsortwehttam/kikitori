@@ -72,6 +72,32 @@ def say(text, voice="Samantha"):
     return out
 
 
+def chime():
+    """A soft two-note bell (E6 then B6), well below speech level, marking the end of a card."""
+    out = _cached("chime", "", "v1")
+    if not os.path.exists(out):
+        import math
+        import struct
+        import wave
+        rate, length = int(RATE), 0.9
+        notes = [(1318.5, 0.0), (1975.5, 0.12)]  # (Hz, start s)
+        frames = []
+        for i in range(int(rate * length)):
+            t, v = i / rate, 0.0
+            for freq, start in notes:
+                if t >= start:
+                    dt = t - start
+                    env = min(dt / 0.005, 1.0) * math.exp(-dt * 6)
+                    v += env * (math.sin(2 * math.pi * freq * dt) + 0.25 * math.sin(4 * math.pi * freq * dt))
+            frames.append(struct.pack("<h", int(max(-1, min(1, v * 0.12)) * 32767)))
+        with wave.open(out, "wb") as w:
+            w.setnchannels(1)
+            w.setsampwidth(2)
+            w.setframerate(rate)
+            w.writeframes(b"".join(frames))
+    return out
+
+
 def silence(seconds):
     out = _cached("silence", "", f"{seconds:.2f}")
     if not os.path.exists(out):

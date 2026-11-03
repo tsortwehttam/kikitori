@@ -3,6 +3,8 @@
 
     python3 publish.py EPISODE.mp3 --title "..." [--script SCRIPT.json] [--description "..."]
 
+Publishing a title that already exists replaces that episode.
+
 Episodes live in S3 under a secret prefix (FEED_PREFIX in .env); the episode list is
 episodes.json next to feed.xml, so the feed can be rebuilt from S3 alone.
 The feed URL is https://<cloudfront domain>/<FEED_PREFIX>/feed.xml.
@@ -61,7 +63,9 @@ def duration(path):
 def transcript_html(script):
     rows = []
     for item in script.get("lines", []):
-        if "text" in item:
+        if "card" in item:
+            rows.append(f"<p>{html.escape(item['card']['ja'])}<br><i>{html.escape(item['card']['en'])}</i></p>")
+        elif "text" in item:
             cls = "en" if item["say"] == "en" else "ja"
             text = html.escape(item["text"])
             rows.append(f"<p><i>{text}</i></p>" if cls == "en" else f"<p>{text}</p>")
@@ -118,6 +122,9 @@ def main():
     s3_put(cover, f"{prefix}/cover.png", bucket, "image/png", "public, max-age=86400")
 
     episodes = s3_get_json(f"{prefix}/episodes.json", bucket, [])
+    for old in [e for e in episodes if e["title"] == a.title]:
+        subprocess.run(AWS + ["s3", "rm", f"s3://{bucket}/{prefix}/{old['file']}", "--only-show-errors"], check=True)
+        episodes.remove(old)
     episodes.append({
         "guid": str(uuid.uuid4()), "title": a.title, "description": a.description or script.get("description", ""),
         "file": file, "bytes": os.path.getsize(a.mp3), "seconds": duration(a.mp3),

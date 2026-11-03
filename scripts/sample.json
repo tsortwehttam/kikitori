@@ -2,43 +2,113 @@
  "title": "Sample",
  "description": "Two-minute sample: card sentences, then a JLPT-style dialogue with one question.",
  "lines": [
-  {"say": "en", "text": "Part one. Sentences from your cards."},
-  {"pause": 0.8},
-  {"say": "card", "text": "予算を削られたので、いくつかの機能は見送ることにした。"},
-  {"pause": 1.2},
-  {"say": "en", "text": "Our budget got cut, so we decided to shelve a few features."},
-  {"pause": 1.5},
-  {"say": "card", "text": "部長のダジャレが滑って、会議室が静まり返った。"},
-  {"pause": 1.2},
-  {"say": "en", "text": "The manager's pun fell flat, and the meeting room went dead silent."},
-  {"pause": 1.5},
-  {"say": "card", "text": "あの物件はやめておこうという直感が当たった。"},
-  {"pause": 1.2},
-  {"say": "en", "text": "My gut feeling that I should pass on that apartment turned out to be right."},
-  {"pause": 1.5},
-  {"say": "card", "text": "谷中は今でも下町情緒が残っていて、散歩が楽しい。"},
-  {"pause": 1.2},
-  {"say": "en", "text": "Yanaka still has that old-downtown charm, so it's fun to walk around."},
-  {"pause": 2.0},
-  {"say": "en", "text": "Part two. A JLPT-style dialogue."},
-  {"pause": 0.8},
-  {"say": "narrator", "text": "会社で男の人と女の人が話しています。男の人は、どうしてリリースが遅れると言っていますか。"},
-  {"pause": 1.2},
-  {"say": "f", "text": "田中さん、例のアプリのリリース、来週で大丈夫そう？"},
-  {"say": "m", "text": "それが、ちょっと厳しくて。テストで不具合が見つかって、修正にけっこう工数がかかりそうなんです。"},
-  {"say": "f", "text": "そっか。じゃあ、月末にずれ込みそう？"},
-  {"say": "m", "text": "はい、たぶん下旬になると思います。最初に要件をちゃんと固めておけば、こんな手戻りはなかったんですけど。"},
-  {"say": "f", "text": "まあ、今さら言ってもしょうがないよ。それより、お客さんには早めに伝えたほうがいいね。"},
-  {"say": "m", "text": "そうですね。明日の打ち合わせはリスケさせてもらって、見積もりも出し直します。"},
-  {"say": "f", "text": "うん。お客さんへの連絡は、私からしておくから。"},
-  {"say": "m", "text": "助かります。"},
-  {"pause": 1.2},
-  {"say": "narrator", "text": "男の人は、どうしてリリースが遅れると言っていますか。"},
-  {"pause": 0.6},
-  {"say": "narrator", "text": "１、お客さんの要望が変わったから。２、テストで不具合が見つかったから。３、担当者が休んでいるから。４、見積もりが間違っていたから。"},
-  {"pause": 5.0},
-  {"say": "narrator", "text": "正解は、２番。テストで不具合が見つかったから、です。"},
-  {"pause": 0.6},
-  {"say": "en", "text": "The answer is two: they found a bug in testing."}
+  {
+   "say": "en",
+   "text": "Part one. Sentences from your cards."
+  },
+  {
+   "pause": 0.8
+  },
+  {
+   "card": {
+    "ja": "予算を削られたので、いくつかの機能は見送ることにした。",
+    "en": "Our budget got cut, so we decided to shelve a few features."
+   }
+  },
+  {
+   "card": {
+    "ja": "部長のダジャレが滑って、会議室が静まり返った。",
+    "en": "The manager's pun fell flat, and the meeting room went dead silent."
+   }
+  },
+  {
+   "card": {
+    "ja": "あの物件はやめておこうという直感が当たった。",
+    "en": "My gut feeling that I should pass on that apartment turned out to be right."
+   }
+  },
+  {
+   "card": {
+    "ja": "谷中は今でも下町情緒が残っていて、散歩が楽しい。",
+    "en": "Yanaka still has that old-downtown charm, so it's fun to walk around."
+   }
+  },
+  {
+   "pause": 1.0
+  },
+  {
+   "say": "en",
+   "text": "Part two. A JLPT-style dialogue."
+  },
+  {
+   "pause": 0.8
+  },
+  {
+   "say": "narrator",
+   "text": "会社で男の人と女の人が話しています。男の人は、どうしてリリースが遅れると言っていますか。"
+  },
+  {
+   "pause": 1.2
+  },
+  {
+   "say": "f",
+   "text": "田中さん、例のアプリのリリース、来週で大丈夫そう？"
+  },
+  {
+   "say": "m",
+   "text": "それが、ちょっと厳しくて。テストで不具合が見つかって、修正にけっこう工数がかかりそうなんです。"
+  },
+  {
+   "say": "f",
+   "text": "そっか。じゃあ、月末にずれ込みそう？"
+  },
+  {
+   "say": "m",
+   "text": "はい、たぶん下旬になると思います。最初に要件をちゃんと固めておけば、こんな手戻りはなかったんですけど。"
+  },
+  {
+   "say": "f",
+   "text": "まあ、今さら言ってもしょうがないよ。それより、お客さんには早めに伝えたほうがいいね。"
+  },
+  {
+   "say": "m",
+   "text": "そうですね。明日の打ち合わせはリスケさせてもらって、見積もりも出し直します。"
+  },
+  {
+   "say": "f",
+   "text": "うん。お客さんへの連絡は、私からしておくから。"
+  },
+  {
+   "say": "m",
+   "text": "助かります。"
+  },
+  {
+   "pause": 1.2
+  },
+  {
+   "say": "narrator",
+   "text": "男の人は、どうしてリリースが遅れると言っていますか。"
+  },
+  {
+   "pause": 0.6
+  },
+  {
+   "say": "narrator",
+   "text": "１、お客さんの要望が変わったから。２、テストで不具合が見つかったから。３、担当者が休んでいるから。４、見積もりが間違っていたから。"
+  },
+  {
+   "pause": 5.0
+  },
+  {
+   "say": "narrator",
+   "text": "正解は、２番。テストで不具合が見つかったから、です。"
+  },
+  {
+   "pause": 0.6
+  },
+  {
+   "say": "en",
+   "text": "The answer is two: they found a bug in testing."
+  }
  ]
 }
