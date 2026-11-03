@@ -12,8 +12,10 @@ Each segment's writer is asked to work in vocabulary I'm currently learning in A
 
 ## How it works
 
-- `episode.py` assembles the day's script from segment files (`build/seg-*.json`) and a card list.
-- `build.py` renders a script to MP3. Japanese uses [AivisSpeech](https://aivis-project.com) running locally (花音, わかな, 阿井田 茂) or Amazon Polly. English uses macOS `say`. Audio is loudness-normalised to podcast level.
+- `cards.py` syncs Anki through AnkiConnect and exports the card sentences added or reviewed since the last episode (`build/cards-today.json`), plus the vocabulary the segments should use (`build/vocab.txt`).
+- The segments are written by Claude Code: news, an opinion column, and a translated essay by subagents, and the dialogue as a spec that `dialogue.py` expands into `build/seg-dialogue.json`.
+- `episode.py` assembles the day's script from the segment files (`build/seg-*.json`) and the card list, and records the episode's topics in `build/history.jsonl` so later episodes don't repeat them.
+- `build.py` renders a script to MP3. Japanese uses [AivisSpeech](https://aivis-project.com) running locally (花音, わかな, 阿井田 茂; started automatically if it isn't running) or Amazon Polly. English uses macOS `say`. Audio is loudness-normalised to podcast level.
 - `publish.py` uploads the episode to S3 and rebuilds an RSS feed. CloudFront serves the feed under a secret path, and podcast apps subscribe to it by URL. `--remove` deletes an episode.
 - `Infra/template.yaml` is the CloudFormation stack: a private S3 bucket behind CloudFront.
 

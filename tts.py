@@ -8,12 +8,14 @@ import hashlib
 import json
 import os
 import subprocess
+import time
 import urllib.parse
 import urllib.request
 
 CACHE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "build", "tts-cache")
 AWS = ["aws", "--profile", "new-account", "--region", "us-east-1"]
 AIVIS = "http://127.0.0.1:10101"
+AIVIS_RUN = os.path.expanduser("~/Applications/AivisSpeech-Engine/macOS-arm64/run")
 RATE = "24000"
 
 
@@ -38,6 +40,27 @@ def polly(text, voice, engine="neural"):
         _to_wav(mp3, out)
         os.remove(mp3)
     return out
+
+
+def ensure_aivis(wait=180):
+    """Start the AivisSpeech Engine in the background if it isn't answering, and wait for it."""
+    def up():
+        try:
+            with urllib.request.urlopen(f"{AIVIS}/version", timeout=2):
+                return True
+        except OSError:
+            return False
+    if up():
+        return
+    log = open(os.path.join(os.path.dirname(CACHE), "aivis.log"), "ab")
+    subprocess.Popen([AIVIS_RUN, "--host", "127.0.0.1", "--port", "10101", "--disable_sentry", "--output_log_utf8"],
+                     stdout=log, stderr=log, start_new_session=True)
+    print("Starting the AivisSpeech Engine...", flush=True)
+    for _ in range(wait):
+        if up():
+            return
+        time.sleep(1)
+    raise SystemExit("AivisSpeech Engine did not start; see build/aivis.log")
 
 
 def aivis_speakers():

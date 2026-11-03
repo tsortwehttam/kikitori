@@ -73,6 +73,8 @@ def render_line(engine, role, text, speakers):
 
 
 def build(script, engine, out):
+    if engine == "aivis":
+        tts.ensure_aivis()
     speakers = tts.aivis_speakers() if engine == "aivis" else {}
     parts, lines = [], expand(script["lines"])
     for i, item in enumerate(lines):
