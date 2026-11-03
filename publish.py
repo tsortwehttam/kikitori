@@ -3,7 +3,8 @@
 
     python3 publish.py EPISODE.mp3 --title "..." [--script SCRIPT.json] [--description "..."]
 
-Publishing a title that already exists replaces that episode.
+Publishing a title that already exists replaces that episode;
+`publish.py --remove --title "..."` deletes one.
 
 Episodes live in S3 under a secret prefix (FEED_PREFIX in .env); the episode list is
 episodes.json next to feed.xml, so the feed can be rebuilt from S3 alone.
@@ -107,38 +108,50 @@ def feed_xml(base, episodes):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("mp3")
+    p.add_argument("mp3", nargs="?", help="omit with --remove")
     p.add_argument("--title", required=True)
+    p.add_argument("--remove", action="store_true", help="delete the episode with this title instead")
     p.add_argument("--description", default="")
     p.add_argument("--script", help="episode script JSON; its lines become the show-notes transcript")
     a = p.parse_args()
 
     prefix, bucket = env()["FEED_PREFIX"], stack_output("BucketName")
     base = f"https://{stack_output('DistributionDomain')}/{prefix}"
+    episodes = s3_get_json(f"{prefix}/episodes.json", bucket, [])
+    old = [e for e in episodes if e["title"] == a.title]
+    if a.remove and not old:
+        raise SystemExit(f"No episode titled {a.title!r}")
+    for e in old:
+        subprocess.run(AWS + ["s3", "rm", f"s3://{bucket}/{prefix}/{e['file']}", "--only-show-errors"], check=True)
+        episodes.remove(e)
+    if a.remove:
+        write_feed(base, prefix, bucket, episodes)
+        print(f"Removed {a.title}")
+        return
+    if not a.mp3:
+        p.error("an MP3 is required unless --remove is given")
+
     now = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
     file = f"episodes/{now:%Y%m%d-%H%M%S}-{os.path.basename(a.mp3)}"
     script = json.load(open(a.script)) if a.script else {}
-
     s3_put(a.mp3, f"{prefix}/{file}", bucket, "audio/mpeg", "public, max-age=31536000, immutable")
-    cover = os.path.join(ROOT, "cover.png")
-    s3_put(cover, f"{prefix}/cover.png", bucket, "image/png", "public, max-age=86400")
-
-    episodes = s3_get_json(f"{prefix}/episodes.json", bucket, [])
-    for old in [e for e in episodes if e["title"] == a.title]:
-        subprocess.run(AWS + ["s3", "rm", f"s3://{bucket}/{prefix}/{old['file']}", "--only-show-errors"], check=True)
-        episodes.remove(old)
+    s3_put(os.path.join(ROOT, "cover.png"), f"{prefix}/cover.png", bucket, "image/png", "public, max-age=86400")
     episodes.append({
         "guid": str(uuid.uuid4()), "title": a.title, "description": a.description or script.get("description", ""),
         "file": file, "bytes": os.path.getsize(a.mp3), "seconds": duration(a.mp3),
         "published": now.isoformat(), "transcript": transcript_html(script),
     })
+    write_feed(base, prefix, bucket, episodes)
+    print(f"Published {a.title}\nFeed: {base}/feed.xml")
+
+
+def write_feed(base, prefix, bucket, episodes):
     with tempfile.TemporaryDirectory() as tmp:
         ep, feed = os.path.join(tmp, "episodes.json"), os.path.join(tmp, "feed.xml")
         json.dump(episodes, open(ep, "w"), ensure_ascii=False, indent=1)
         open(feed, "w").write(feed_xml(base, episodes))
         s3_put(ep, f"{prefix}/episodes.json", bucket, "application/json", "no-cache")
         s3_put(feed, f"{prefix}/feed.xml", bucket, "application/rss+xml; charset=utf-8", "public, max-age=300")
-    print(f"Published {a.title}\nFeed: {base}/feed.xml")
 
 
 if __name__ == "__main__":
