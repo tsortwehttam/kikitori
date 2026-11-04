@@ -1,6 +1,6 @@
 # Kikitori 聞き取り
 
-A private Japanese listening podcast built from my Anki cards. Each daily episode runs about 30 minutes and mixes:
+A private Japanese listening podcast built from my Anki cards. Each daily episode runs about 25 minutes and mixes:
 
 1. **Card sentences** from recently added and production cards: Japanese, English, then Japanese again, with a soft chime between cards.
 2. **News**: real stories from the last day or two, rewritten as N2-level broadcast Japanese.

@@ -4,15 +4,15 @@
     python3 dialogue.py build/dialogue-src.json
 
 Spec:
-    {"intro_en": "Part three. A JLPT-style dialogue, with four questions at the end.",
+    {"intro_en": "Part three. A JLPT-style dialogue, with three questions at the end.",
      "setup": "家で、男の人と女の人が話しています。話を聞いて、あとの質問に答えてください。",
      "lines": [["f", "ねえ、..."], ["m", "えっ、..."]],
-     "questions": [{"q": "質問1。...", "choices": ["駅から遠いから", "...", "...", "..."],
+     "questions": [{"q": "質問1。...", "choices": ["駅から遠いから", "...", "..."],
                     "answer": 3, "en": "Question 1: why she wants to move. Answer 3: ..."}],
      "vocab_used": ["気が気でない", "..."]}
 
 The narrator reads the setup, the speakers ("f", "m") act the dialogue, then the narrator
-asks each question with its four choices and a 6-second pause, a chime, and the answers
+asks each question with its three choices and a 6-second pause, a chime, and the answers
 in Japanese with an English explanation.
 """
 import json
@@ -31,8 +31,8 @@ def expand(spec):
         lines.append({"say": role, "text": text})
     lines += [{"pause": 1.5}, {"say": N, "text": "では、質問です。"}, {"pause": 0.8}]
     for q in spec["questions"]:
-        if len(q["choices"]) != 4 or not 1 <= q["answer"] <= 4:
-            raise SystemExit(f"each question needs 4 choices and an answer 1-4: {q['q']}")
+        if len(q["choices"]) != 3 or not 1 <= q["answer"] <= 3:
+            raise SystemExit(f"each question needs 3 choices and an answer 1-3: {q['q']}")
         choices = "".join(f"{i}、{c.rstrip('。')}。" for i, c in enumerate(q["choices"], 1))
         lines += [{"say": N, "text": q["q"]}, {"pause": 0.6}, {"say": N, "text": choices}, {"pause": 6.0}]
     lines += [{"chime": True}, {"pause": 0.8}, {"say": N, "text": "正解を確認します。"}, {"pause": 0.6}]
