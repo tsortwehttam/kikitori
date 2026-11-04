@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Pick the words to review after each segment, from the writers' candidates.
 
-    python3 glossary.py [--date 2026-11-04] [--max 10] [--recent 5]
+    python3 glossary.py [--date 2026-11-04] [--max N] [--recent 5]
 
 Each segment writer adds a "glossary" list to its build/seg-*.json: the words and phrases
 an N2-N3 listener might not catch, in the order they appear:
@@ -18,7 +18,8 @@ which episode.py plays after each segment. A candidate is:
   way, since each part of a phrase can be easy when the whole isn't);
 - dropped if an earlier episode in the last --recent reviewed it, unless it's young in Anki;
 - dropped if its line isn't in the segment and the term doesn't appear in any line.
-At most --max per segment are kept: learning words first, then the rest spread evenly through
+At most CAPS[segment] are kept (10 after the news, 7 after the shorter column and essay;
+--max sets one cap for all): learning words first, then the rest spread evenly through
 the segment, played in the order they appear.
 """
 import argparse
@@ -29,6 +30,7 @@ import os
 from cards import BUILD, CORE, PROD, field, invoke, notes, plain
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
+CAPS = {"news": 10, "essay": 7, "translation": 7, "dialogue": 7}  # most words in each word list
 SEGMENTS = ["news", "essay", "translation", "dialogue"]
 MATURE = 21  # days
 # Standard (unofficial) JLPT word list, word -> level 1-5 (github.com/elzup/jlpt-word-list).
@@ -63,7 +65,7 @@ def recent_terms(day, count):
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--date", default=datetime.date.today().isoformat())
-    p.add_argument("--max", type=int, default=10, help="most words per segment")
+    p.add_argument("--max", type=int, help="most words per segment, overriding CAPS")
     p.add_argument("--recent", type=int, default=5, help="skip words reviewed in this many earlier episodes")
     a = p.parse_args()
     day = datetime.date.fromisoformat(a.date)
@@ -108,15 +110,16 @@ def main():
             else:
                 kept.append({"term": term, "reading": c.get("reading", ""), "en": c["en"], "line": line,
                              "anki": status or "new", "_order": order})
-        if len(kept) > a.max:  # learning words first, the rest spread evenly through the segment
-            young = [k for k in kept if k["anki"] == "young"][: a.max]
+        cap = a.max or CAPS[name]
+        if len(kept) > cap:  # learning words first, the rest spread evenly through the segment
+            young = [k for k in kept if k["anki"] == "young"][:cap]
             rest = [k for k in kept if k["anki"] != "young"]
-            slots = a.max - len(young)
+            slots = cap - len(young)
             picks = {round(i * len(rest) / slots) for i in range(slots)} if slots else set()
             chosen = young + [k for i, k in enumerate(rest) if i in picks]
             for k in kept:
                 if k not in chosen:
-                    out["dropped"].append({"segment": name, "term": k["term"], "why": f"over the cap of {a.max}"})
+                    out["dropped"].append({"segment": name, "term": k["term"], "why": f"over the cap of {cap}"})
             kept = sorted(chosen, key=lambda k: k["_order"])
         for k in kept:
             del k["_order"]
