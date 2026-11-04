@@ -19,6 +19,7 @@ Each segment's writer is asked to work in vocabulary I'm currently learning in A
 - `glossary.py` picks each segment's word list from its writer's candidates. It keeps words still young in Anki first, and drops words mature in Anki, N5 and N4 single words (by a JLPT word list, `KIKITORI_JLPT`), and words reviewed in recent episodes.
 - `episode.py` assembles the day's script from the segment files (`build/seg-*.json`) and the card list, and records the episode's topics in `build/history.jsonl` so later episodes don't repeat them.
 - `build.py` renders a script to MP3. Japanese uses [AivisSpeech](https://aivis-project.com) running locally (花音, わかな, 阿井田 茂; started automatically if it isn't running) or Amazon Polly. English uses macOS `say`. Audio is loudness-normalised to podcast level.
+- `say` speaks one line in an episode voice, for checking how a word is read: `./say narrator "こんにちは"`. Voices are narrator, f, m, card, en, or `aivis:NAME`.
 - `publish.py` uploads the episode to S3 and rebuilds an RSS feed. CloudFront serves the feed under a secret path, and podcast apps subscribe to it by URL. `--remove` deletes an episode.
 - `Infra/template.yaml` is the CloudFormation stack: a private S3 bucket behind CloudFront.
 
